@@ -1,6 +1,15 @@
 const USAGE_API_BASE = "https://claude.ai/api/organizations";
 const POLL_MINUTES = 5;
 const ALARM_NAME = "usage-poll";
+const THRESHOLDS = [50, 75, 90];
+const KEY_LABELS = {
+  five_hour: "Current Session",
+  seven_day: "Weekly All Models",
+  seven_day_sonnet: "Weekly Sonnet",
+  seven_day_opus: "Weekly Opus",
+  seven_day_cowork: "Weekly Cowork",
+  seven_day_oauth: "Weekly OAuth"
+};
 
 // === Cookie & API Helpers ===
 
@@ -76,6 +85,52 @@ async function updateBadge(usageData) {
   await chrome.action.setBadgeTextColor({ color: "#FFFFFF" });
 }
 
+// === Threshold Notifications ===
+
+function formatResetTime(resetAtIso) {
+  if (!resetAtIso) return "soon";
+  const diffMs = new Date(resetAtIso).getTime() - Date.now();
+  if (diffMs <= 0) return "soon";
+  const totalMin = Math.floor(diffMs / 60000);
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  if (h > 24) return `${Math.floor(h / 24)}d ${h % 24}h`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+async function checkThresholdNotifications(usageData) {
+  const firstKey = await getFirstCardKey();
+  const entry = usageData[firstKey];
+  if (!entry) return;
+
+  const pct = Math.round(entry.utilization);
+  const { notifiedThresholds = {} } = await chrome.storage.local.get("notifiedThresholds");
+  let changed = false;
+
+  for (const threshold of THRESHOLDS) {
+    const storageKey = `notified_${firstKey}_${threshold}`;
+
+    if (pct >= threshold && !notifiedThresholds[storageKey]) {
+      notifiedThresholds[storageKey] = true;
+      changed = true;
+      chrome.notifications.create(`${firstKey}_${threshold}`, {
+        type: "basic",
+        iconUrl: "icons/icon128.png",
+        title: KEY_LABELS[firstKey] || firstKey,
+        message: `Usage at ${pct}% — resets in ${formatResetTime(entry.resets_at)}`
+      });
+    } else if (pct < threshold && notifiedThresholds[storageKey]) {
+      delete notifiedThresholds[storageKey];
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    await chrome.storage.local.set({ notifiedThresholds });
+  }
+}
+
 // === Core Poll Orchestrator ===
 
 async function pollUsage() {
@@ -91,6 +146,7 @@ async function pollUsage() {
     });
 
     await updateBadge(usageData);
+    await checkThresholdNotifications(usageData);
   } catch (err) {
     const prev = await chrome.storage.local.get("usageData");
     const storeData = {

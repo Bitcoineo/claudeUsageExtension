@@ -9,6 +9,7 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
 - **Color-coded thresholds** — Green (<50%), Yellow (50-75%), Orange (75-90%), Red (>90%) on progress bars, card borders, and the toolbar badge.
 - **Badge indicator** — The extension icon badge always shows the utilization percentage of whichever card is in the **first position**. Badge background color matches the same threshold palette.
 - **Drag-and-drop reordering** — Drag cards by the grip handle to rearrange them. The order persists across sessions via `chrome.storage.local`. Moving a card to the top immediately updates the badge to reflect that metric.
+- **Threshold notifications** — Chrome desktop alerts when the top card's utilization crosses 50%, 75%, or 90%. Each threshold fires only once; the flag resets when usage drops back below.
 - **Auto-refresh** — Polls the usage API every 5 minutes via `chrome.alarms`. Shows "Updated Xs ago" in the popup header.
 - **Dark theme** — Matches Claude's UI aesthetic (#2a2a2a background).
 
@@ -34,7 +35,7 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
 
 ```
 ├── manifest.json      # Manifest V3 — permissions, service worker, popup
-├── background.js      # Cookie reading, API polling, badge updates
+├── background.js      # Cookie reading, API polling, badge updates, notifications
 ├── popup.html         # Popup markup
 ├── popup.css          # Dark theme styles, progress bars, drag states
 ├── popup.js           # Dynamic rendering, drag-and-drop, time calculations
@@ -62,7 +63,8 @@ The badge updates instantly when you reorder cards, and again every 5 minutes wh
 |---|---|
 | `cookies` | Read `claude.ai` cookies to authenticate API requests |
 | `alarms` | Poll the usage endpoint every 5 minutes |
-| `storage` | Persist usage data and card order across sessions |
+| `storage` | Persist usage data, card order, and notification flags across sessions |
+| `notifications` | Desktop alerts when usage crosses 50%, 75%, or 90% thresholds |
 | `host_permissions: claude.ai` | Required for cookie access and API fetch |
 
 ## Built by
