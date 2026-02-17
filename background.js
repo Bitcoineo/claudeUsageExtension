@@ -68,9 +68,9 @@ async function updateBadge(usageData) {
 
   let color;
   if (pct < 50) color = "#4CAF50";
-  else if (pct < 75) color = "#FFC107";
-  else if (pct < 90) color = "#FF9800";
-  else color = "#F44336";
+  else if (pct < 75) color = "#c4a829";
+  else if (pct < 90) color = "#e8600a";
+  else color = "#f85149";
 
   await chrome.action.setBadgeBackgroundColor({ color });
   await chrome.action.setBadgeTextColor({ color: "#FFFFFF" });

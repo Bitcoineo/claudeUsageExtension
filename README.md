@@ -7,8 +7,8 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
 - **Automatic cookie reading** — no manual pasting. The extension reads cookies directly via `chrome.cookies` API with `host_permissions` for `claude.ai`.
 - **Real-time usage bars** — Current Session (5-hour), Weekly All Models (7-day), Weekly Sonnet, and more. Null/unavailable tiers are hidden automatically.
 - **Color-coded thresholds** — Green (<50%), Yellow (50-75%), Orange (75-90%), Red (>90%) on progress bars, card borders, and the toolbar badge.
-- **Badge indicator** — The extension icon badge shows the utilization percentage of whichever card is in the first position.
-- **Drag-and-drop reordering** — Drag cards to rearrange them. The order persists across sessions. The top card drives the badge value.
+- **Badge indicator** — The extension icon badge always shows the utilization percentage of whichever card is in the **first position**. Badge background color matches the same threshold palette.
+- **Drag-and-drop reordering** — Drag cards by the grip handle to rearrange them. The order persists across sessions via `chrome.storage.local`. Moving a card to the top immediately updates the badge to reflect that metric.
 - **Auto-refresh** — Polls the usage API every 5 minutes via `chrome.alarms`. Shows "Updated Xs ago" in the popup header.
 - **Dark theme** — Matches Claude's UI aesthetic (#2a2a2a background).
 
@@ -43,6 +43,18 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
     ├── icon48.png
     └── icon128.png
 ```
+
+## Drag-to-Reorder & Badge
+
+Each usage card has a grip handle (six dots) on the left. Drag any card to a new position to reorder the list. Your custom order is saved and restored automatically on every popup open.
+
+The toolbar badge always reflects the **first card** in the list:
+
+- Default order starts with Current Session (5-hour utilization)
+- Drag Weekly Sonnet to the top and the badge switches to show the Sonnet percentage
+- Badge background color follows the same thresholds: green `#00d97e` (<50%), yellow `#c4a829` (50-75%), orange `#e8600a` (75-90%), red `#f85149` (>90%)
+
+The badge updates instantly when you reorder cards, and again every 5 minutes when fresh data arrives from the API.
 
 ## Permissions
 
