@@ -30,6 +30,7 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
 ## Screenshots
 
 ![Usage popup](store/screenshot-1.png)
+
 ![Welcome screen](store/screenshot-2.png)
 
 ## How It Works
