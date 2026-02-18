@@ -22,7 +22,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderUsage(stored.usageData);
     startUpdateTimer(stored.usageData.lastUpdated);
   } else if (stored.usageData && stored.usageData.error) {
-    showStatus(getErrorMessage(stored.usageData.error), true);
+    if (isAuthError(stored.usageData.error)) {
+      showWelcome();
+    } else {
+      showStatus(getErrorMessage(stored.usageData.error), true);
+    }
   } else {
     showStatus("Loading usage data...", false);
   }
@@ -36,7 +40,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderUsage(newData);
         startUpdateTimer(newData.lastUpdated);
       } else if (newData && newData.error) {
-        showStatus(getErrorMessage(newData.error), true);
+        if (isAuthError(newData.error)) {
+          showWelcome();
+        } else {
+          showStatus(getErrorMessage(newData.error), true);
+        }
       }
     }
   });
@@ -246,6 +254,37 @@ function getErrorMessage(errorCode) {
       }
       return "Something went wrong. Try again later.";
   }
+}
+
+// === Welcome / Onboarding ===
+
+function isAuthError(errorCode) {
+  return errorCode === "NO_COOKIES" || errorCode === "NO_ORG_ID";
+}
+
+function showWelcome() {
+  const container = document.getElementById("usageSections");
+  const statusEl = document.getElementById("statusMsg");
+  statusEl.classList.add("hidden");
+
+  container.innerHTML = `
+    <div class="welcome">
+      <img src="icons/icon128.png" class="welcome-icon" alt="Claude Usage Tracker">
+      <h2 class="welcome-title">Welcome to Claude Usage Tracker</h2>
+      <p class="welcome-subtitle">Sign in to Claude to start tracking your usage</p>
+      <button class="welcome-btn" id="openClaudeBtn">Open Claude</button>
+      <button class="welcome-refresh" id="refreshBtn">Refresh</button>
+    </div>
+  `;
+
+  document.getElementById("openClaudeBtn").addEventListener("click", () => {
+    chrome.tabs.create({ url: "https://claude.ai/settings/usage" });
+  });
+
+  document.getElementById("refreshBtn").addEventListener("click", () => {
+    document.getElementById("refreshBtn").textContent = "Refreshing...";
+    chrome.runtime.sendMessage({ action: "pollNow" });
+  });
 }
 
 // === Status Display ===

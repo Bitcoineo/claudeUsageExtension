@@ -1,0 +1,1 @@
+Displays real-time Claude.ai usage limits with color-coded progress bars and threshold notifications.

@@ -13,7 +13,12 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
 - **Auto-refresh** — Polls the usage API every 5 minutes via `chrome.alarms`. Shows "Updated Xs ago" in the popup header.
 - **Dark theme** — Matches Claude's UI aesthetic (#2a2a2a background).
 
-## Installation
+## Install from Chrome Web Store
+
+<!-- TODO: Replace with actual CWS link after publishing -->
+> Coming soon — the extension is pending Chrome Web Store review.
+
+## Install from Source
 
 1. Clone or download this repository
 2. Open `chrome://extensions` in Chrome
@@ -21,6 +26,11 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
 4. Click **Load unpacked** and select the project folder
 5. Sign in to [claude.ai](https://claude.ai) in any tab
 6. Click the extension icon to see your usage
+
+## Screenshots
+
+![Usage popup](store/screenshot-1.png)
+![Welcome screen](store/screenshot-2.png)
 
 ## How It Works
 
@@ -39,10 +49,18 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
 ├── popup.html         # Popup markup
 ├── popup.css          # Dark theme styles, progress bars, drag states
 ├── popup.js           # Dynamic rendering, drag-and-drop, time calculations
-└── icons/
-    ├── icon16.png
-    ├── icon48.png
-    └── icon128.png
+├── icons/
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+└── store/
+    ├── screenshot-1.png               # CWS screenshot — usage popup
+    ├── screenshot-2.png               # CWS screenshot — welcome screen
+    ├── promo-tile.png                 # CWS promotional tile
+    ├── privacy-policy.html            # Standalone privacy policy page
+    ├── store-description.txt          # Chrome Web Store listing description
+    ├── permission-justifications.txt  # Per-permission justifications for CWS review
+    └── single-purpose.txt            # Single-purpose description for CWS review
 ```
 
 ## Drag-to-Reorder & Badge
@@ -53,7 +71,7 @@ The toolbar badge always reflects the **first card** in the list:
 
 - Default order starts with Current Session (5-hour utilization)
 - Drag Weekly Sonnet to the top and the badge switches to show the Sonnet percentage
-- Badge background color follows the same thresholds: green `#00d97e` (<50%), yellow `#c4a829` (50-75%), orange `#e8600a` (75-90%), red `#f85149` (>90%)
+- Badge background color follows the same thresholds: green `#4CAF50` (<50%), yellow `#c4a829` (50-75%), orange `#e8600a` (75-90%), red `#f85149` (>90%)
 
 The badge updates instantly when you reorder cards, and again every 5 minutes when fresh data arrives from the API.
 

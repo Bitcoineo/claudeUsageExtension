@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Claude Usage Tracker</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .updated {
+      font-size: 13px;
+      color: #8a8a8a;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 16px;
+      color: #fff;
+      margin: 24px 0 8px;
+    }
+    p {
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: #c0c0c0;
+    }
+    ul {
+      margin: 0 0 12px 20px;
+      font-size: 14px;
+      color: #c0c0c0;
+    }
+    li { margin-bottom: 6px; }
+    a { color: #00d97e; }
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+      font-size: 13px;
+      color: #8a8a8a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Privacy Policy</h1>
+    <p class="updated">Claude Usage Tracker — Chrome Extension</p>
+
+    <h2>Data Collection</h2>
+    <p>This extension does <strong>not</strong> collect, transmit, or store any user data on external servers. There are no analytics, no tracking, and no telemetry of any kind.</p>
+
+    <h2>How It Works</h2>
+    <p>The extension reads cookies from the <code>claude.ai</code> domain using the Chrome <code>cookies</code> API. These cookies are used solely to authenticate requests to the Claude.ai usage API on your behalf. The extension calls:</p>
+    <p><code>https://claude.ai/api/organizations/{orgId}/usage</code></p>
+    <p>This is the same endpoint your browser uses when you visit the Claude.ai usage page. The extension simply automates this request.</p>
+
+    <h2>Data Storage</h2>
+    <p>All data is stored locally on your device using <code>chrome.storage.local</code>. This includes:</p>
+    <ul>
+      <li>Usage data returned by the Claude.ai API</li>
+      <li>Your card display order preference</li>
+      <li>Notification threshold flags</li>
+    </ul>
+    <p>No data is ever sent to any third-party server, analytics service, or external endpoint.</p>
+
+    <h2>Cookie Usage</h2>
+    <p>The extension reads your <code>claude.ai</code> session cookies to authenticate API requests. Cookies are:</p>
+    <ul>
+      <li>Read from the <code>claude.ai</code> domain only</li>
+      <li>Sent only to <code>claude.ai</code> API endpoints</li>
+      <li>Never stored, logged, or transmitted anywhere else</li>
+    </ul>
+
+    <h2>Permissions</h2>
+    <ul>
+      <li><strong>cookies</strong> — Read claude.ai session cookies to authenticate usage API requests</li>
+      <li><strong>alarms</strong> — Poll the usage endpoint every 5 minutes</li>
+      <li><strong>storage</strong> — Persist usage data, card order, and notification state locally</li>
+      <li><strong>notifications</strong> — Display desktop alerts when usage crosses thresholds</li>
+      <li><strong>host_permissions (claude.ai)</strong> — Required for cookie access and API fetch</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Author: <strong>Bitcoineo</strong></p>
+    <p>Issues and questions: <a href="https://github.com/Bitcoineo" target="_blank">github.com/Bitcoineo</a></p>
+
+    <div class="footer">
+      <p>This extension is open source. You can review the complete source code on GitHub.</p>
+    </div>
+  </div>
+</body>
+</html>

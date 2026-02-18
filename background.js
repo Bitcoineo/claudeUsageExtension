@@ -176,6 +176,14 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
   }
 });
 
+// === Message handler for manual refresh from popup ===
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === "pollNow") {
+    pollUsage();
+  }
+});
+
 // === Event Listeners (TOP LEVEL — required for MV3) ===
 
 chrome.alarms.onAlarm.addListener((alarm) => {

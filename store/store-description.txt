@@ -1,0 +1,16 @@
+Track your Claude.ai usage limits in real time — no setup required.
+
+Claude Usage Tracker automatically reads your session cookies and displays your current utilization with color-coded progress bars. See at a glance how much of your Claude usage allowance you've consumed.
+
+Features:
+
+- Auto-reads cookies with zero setup — just sign in to claude.ai and the extension does the rest
+- Real-time usage bars for Current Session (5-hour), Weekly All Models (7-day), and Weekly Sonnet
+- Color-coded thresholds: green (<50%), yellow (50-75%), orange (75-90%), red (>90%)
+- Drag-to-reorder cards — arrange metrics in the order you care about most
+- Badge shows the utilization percentage of your top priority card right on the toolbar icon
+- Threshold notifications at 50%, 75%, and 90% — get a desktop alert before you hit your limit
+- Dark theme matching Claude's UI aesthetic
+- Auto-refreshes every 5 minutes with "Updated Xs ago" indicator
+- Null/unavailable tiers are hidden automatically
+- All data stored locally — nothing is sent to any external server

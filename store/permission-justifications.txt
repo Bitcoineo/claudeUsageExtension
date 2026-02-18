@@ -1,0 +1,16 @@
+Permission Justifications — Claude Usage Tracker
+
+cookies:
+Read claude.ai session cookies to authenticate requests to the Claude.ai usage API endpoint. The extension needs the user's existing session cookies to call https://claude.ai/api/organizations/{orgId}/usage on their behalf. Cookies are only read from the claude.ai domain and only sent back to claude.ai.
+
+alarms:
+Poll the Claude.ai usage endpoint every 5 minutes to keep the displayed utilization data and toolbar badge up to date. Uses chrome.alarms.create with a 5-minute period.
+
+storage:
+Persist usage data (API response cache), the user's card display order preference, and notification threshold flags across browser sessions using chrome.storage.local. All data is stored locally on the user's device.
+
+notifications:
+Display desktop alerts when the user's top priority usage metric crosses 50%, 75%, or 90% utilization thresholds. Helps users stay aware of their Claude usage limits before they are reached.
+
+host_permissions (https://claude.ai/*):
+Required for two purposes: (1) reading cookies from the claude.ai domain via chrome.cookies.getAll, and (2) making fetch requests to the claude.ai usage API endpoint. No other domains are accessed.
