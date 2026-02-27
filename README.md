@@ -1,31 +1,25 @@
 # Claude Usage Tracker
 
-A Chrome extension that tracks your Claude.ai usage limits in real time. See your current session, weekly, and per-model utilization at a glance with color-coded progress bars.
+Chrome extension that shows your Claude.ai usage limits in real time. Reads your session cookies automatically, displays color-coded progress bars for each usage tier, and keeps a live badge on the toolbar icon.
+
+**Stack:** `Chrome Extension MV3 · Vanilla JS · claude.ai API · chrome.cookies · chrome.alarms`
+
+---
+
+## Why I built this
+
+Claude has usage limits but no built-in way to see how close you are until you hit them. I wanted a persistent indicator in my toolbar so I could manage my session and weekly quotas without getting blindsided mid-conversation.
 
 ## Features
 
-- **Automatic cookie reading** — no manual pasting. The extension reads cookies directly via `chrome.cookies` API with `host_permissions` for `claude.ai`.
-- **Real-time usage bars** — Current Session (5-hour), Weekly All Models (7-day), Weekly Sonnet, and more. Null/unavailable tiers are hidden automatically.
-- **Color-coded thresholds** — Green (<50%), Yellow (50-75%), Orange (75-90%), Red (>90%) on progress bars, card borders, and the toolbar badge.
-- **Badge indicator** — The extension icon badge always shows the utilization percentage of whichever card is in the **first position**. Badge background color matches the same threshold palette.
-- **Drag-and-drop reordering** — Drag cards by the grip handle to rearrange them. The order persists across sessions via `chrome.storage.local`. Moving a card to the top immediately updates the badge to reflect that metric.
-- **Threshold notifications** — Chrome desktop alerts when the top card's utilization crosses 50%, 75%, or 90%. Each threshold fires only once; the flag resets when usage drops back below.
-- **Auto-refresh** — Polls the usage API every 5 minutes via `chrome.alarms`. Shows "Updated Xs ago" in the popup header.
-- **Dark theme** — Matches Claude's UI aesthetic (#2a2a2a background).
-
-## Install from Chrome Web Store
-
-<!-- TODO: Replace with actual CWS link after publishing -->
-> Coming soon — the extension is pending Chrome Web Store review.
-
-## Install from Source
-
-1. Clone or download this repository
-2. Open `chrome://extensions` in Chrome
-3. Enable **Developer mode** (toggle in top-right)
-4. Click **Load unpacked** and select the project folder
-5. Sign in to [claude.ai](https://claude.ai) in any tab
-6. Click the extension icon to see your usage
+- **Auto cookie reading** Reads claude.ai cookies directly via chrome.cookies API, zero setup required
+- **Usage bars** Current Session (5h), Weekly All Models (7d), Weekly Sonnet, and more. Unavailable tiers are hidden automatically
+- **Color-coded thresholds** Green (under 50%), Yellow (50-75%), Orange (75-90%), Red (over 90%) on bars, card bordernd badge
+- **Live toolbar badge** Always shows the utilization of whichever card is in the first position
+- **Drag-to-reorder** Drag cards by the grip handle to prioritize the metric you care about. Order persists via chrome.storage.local and updates the badge instantly
+- **Threshold notifications** Desktop alerts at 50%, 75%, and 90%. Each fires once and resets when usage drops back below
+- **Auto-refresh** Polls the usage API every 5 minutes via chrome.alarms with an "Updated Xs ago" indicator
+- **Dark theme** Matches Claude's UI aesthetic
 
 ## Screenshots
 
@@ -33,59 +27,50 @@ A Chrome extension that tracks your Claude.ai usage limits in real time. See you
 
 ![Welcome screen](store/screenshot-2.png)
 
+## Install
+
+### From Chrome Web Store
+
+[Install Claude Usage Tracker](https://chromewebstore.google.com/detail/claude-usage-tracker/leehnhnjmhkcilhfciocoabjoeecioil)
+
+### From Source
+
+1. Clone this repo
+2. Open chrome://extensions
+3. Enable Developer mode (top right)
+4. Click Load unpacked and select the project folder
+5. Sign in to claude.ai in any tab
+6. Click the extension icon to see your usage
+
 ## How It Works
 
-1. **background.js** (service worker) runs on a 5-minute alarm cycle
-2. Reads all cookies from the `claude.ai` domain using `chrome.cookies.getAll()`
-3. Extracts the organization ID from the `lastActiveOrg` cookie
-4. Calls `https://claude.ai/api/organizations/{orgId}/usage` with the cookie header
-5. Stores the response in `chrome.storage.local` and updates the badge
-6. **popup.js** reads from storage on open and renders progress bars dynamically
-
-## File Structure
-
-```
-├── manifest.json      # Manifest V3 — permissions, service worker, popup
-├── background.js      # Cookie reading, API polling, badge updates, notifications
-├── popup.html         # Popup markup
-├── popup.css          # Dark theme styles, progress bars, drag states
-├── popup.js           # Dynamic rendering, drag-and-drop, time calculations
-├── icons/
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-└── store/
-    ├── screenshot-1.png               # CWS screenshot — usage popup
-    ├── screenshot-2.png               # CWS screenshot — welcome screen
-    ├── promo-tile.png                 # CWS promotional tile
-    ├── privacy-policy.html            # Standalone privacy policy page
-    ├── store-description.txt          # Chrome Web Store listing description
-    ├── permission-justifications.txt  # Per-permission justifications for CWS review
-    └── single-purpose.txt            # Single-purpose description for CWS review
-```
-
-## Drag-to-Reorder & Badge
-
-Each usage card has a grip handle (six dots) on the left. Drag any card to a new position to reorder the list. Your custom order is saved and restored automatically on every popup open.
-
-The toolbar badge always reflects the **first card** in the list:
-
-- Default order starts with Current Session (5-hour utilization)
-- Drag Weekly Sonnet to the top and the badge switches to show the Sonnet percentage
-- Badge background color follows the same thresholds: green `#4CAF50` (<50%), yellow `#c4a829` (50-75%), orange `#e8600a` (75-90%), red `#f85149` (>90%)
-
-The badge updates instantly when you reorder cards, and again every 5 minutes when fresh data arrives from the API.
+1. background.js runs on a 5-minute alarm cycle
+2. Reads all cookies from claude.ai via chrome.cookies.getAll()
+3. Extracts the organization ID from the lastActiveOrg cookie
+4. Calls https://claude.ai/api/organizations/{orgId}/usage with the cookie header
+5. Stores the response in chrome.storage.local and updates the badge
+6. popup.js reads from storage on open and renders progress bars dynamically
 
 ## Permissions
 
 | Permission | Why |
-|---|---|
-| `cookies` | Read `claude.ai` cookies to authenticate API requests |
-| `alarms` | Poll the usage endpoint every 5 minutes |
-| `storage` | Persist usage data, card order, and notification flags across sessions |
-| `notifications` | Desktop alerts when usage crosses 50%, 75%, or 90% thresholds |
-| `host_permissions: claude.ai` | Required for cookie access and API fetch |
+|------------|-----|
+| cookies | Read claude.ai cookies to authenticate API requests |
+| alarms | Poll the usage endpoint every 5 minutes |
+| storage | Persist usage data, card order, and notification flags |
+| notifications | Desktop alerts at 50%, 75%, and 90% thresholds |
+| host_permissions: claude.ai | Required for cookie access and API fetch |
 
-## Built by
+## File Structure
 
-**Bitcoineo** — [X / Twitter](https://x.com/Bitcoineo) · [GitHub](https://github.com/Bitcoineo)
+    manifest.json        Manifest V3, permissions, service worker, popup
+    background.js        Cookie reading, API polling, badge updates, notifications
+    popup.html           Popup markup
+    popup.css            Dark theme styles, progress bars, drag states
+    popup.js             Dynamic rendering, drag-and-drop, time calculations
+    icons/               Extension icons (16, 48, 128px)
+    store/               Chrome Web Store assets and listing copy
+
+## GitHub Topics
+
+`chrome-extension` `claude` `anthropic` `usage-tracker` `manifest-v3` `javascript` `productivity` `ai-tools`
