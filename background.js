@@ -1,4 +1,5 @@
-const USAGE_API_BASE = "https://claude.ai/api/organizations";
+const CLAUDE_ORIGIN = "https://claude.ai";
+const USAGE_API_BASE = `${CLAUDE_ORIGIN}/api/organizations`;
 const POLL_MINUTES = 5;
 const ALARM_NAME = "usage-poll";
 const THRESHOLDS = [50, 75, 90];
@@ -27,15 +28,33 @@ async function fetchUsageData() {
   const orgId = orgCookie.value;
   const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join("; ");
 
-  const res = await fetch(`${USAGE_API_BASE}/${orgId}/usage`, {
-    headers: {
-      "Cookie": cookieHeader,
-      "Content-Type": "application/json"
-    },
+  const url = `${USAGE_API_BASE}/${orgId}/usage`;
+  const headers = {
+    "Cookie": cookieHeader,
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Origin": CLAUDE_ORIGIN,
+    "Referer": `${CLAUDE_ORIGIN}/settings/usage`,
+    "User-Agent": navigator.userAgent,
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin",
+    "anthropic-client-platform": "web",
+  };
+
+  console.log("[ClaudeUsage] Fetching:", url);
+  console.log("[ClaudeUsage] Cookies found:", cookies.map(c => c.name).join(", "));
+
+  const res = await fetch(url, {
+    headers,
     credentials: "include"
   });
 
   if (!res.ok) {
+    let body = "";
+    try { body = await res.text(); } catch (_) {}
+    console.error(`[ClaudeUsage] ${res.status} response:`, body);
+    console.error("[ClaudeUsage] Response headers:", [...res.headers.entries()]);
     throw new Error(`API_ERROR_${res.status}`);
   }
 
