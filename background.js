@@ -44,6 +44,7 @@ async function getFirstCardKey() {
 }
 
 async function updateBadge(usageData) {
+  console.log("[ClaudeUsage] updateBadge called");
   const firstKey = await getFirstCardKey();
 
   // Find the first non-null entry starting from the preferred key
@@ -62,7 +63,7 @@ async function updateBadge(usageData) {
   }
 
   const pct = Math.round(entry.utilization);
-  console.log("[ClaudeUsage] updateBadge called, setting badge to:", pct);
+  console.log("[ClaudeUsage] Setting badge text to:", pct);
   await chrome.action.setBadgeText({ text: `${pct}` });
 
   let color;
@@ -136,7 +137,12 @@ async function pollUsage() {
     });
 
     console.log("[ClaudeUsage] Calling updateBadge with:", JSON.stringify(usageData).slice(0, 200));
-    await updateBadge(usageData);
+    try {
+      await updateBadge(usageData);
+      console.log("[ClaudeUsage] Badge updated successfully");
+    } catch (e) {
+      console.error("[ClaudeUsage] Badge update failed:", e);
+    }
     await checkThresholdNotifications(usageData);
   } catch (err) {
     const prev = await chrome.storage.local.get("usageData");
