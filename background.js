@@ -1,6 +1,6 @@
 const CLAUDE_ORIGIN = "https://claude.ai";
 const USAGE_API_BASE = `${CLAUDE_ORIGIN}/api/organizations`;
-const POLL_MINUTES = 5;
+const POLL_MINUTES = 2;
 const ALARM_NAME = "usage-poll";
 const THRESHOLDS = [50, 75, 90];
 const KEY_LABELS = {
