@@ -62,6 +62,7 @@ async function updateBadge(usageData) {
   }
 
   const pct = Math.round(entry.utilization);
+  console.log("[ClaudeUsage] updateBadge called, setting badge to:", pct);
   await chrome.action.setBadgeText({ text: `${pct}` });
 
   let color;
@@ -134,6 +135,7 @@ async function pollUsage() {
       }
     });
 
+    console.log("[ClaudeUsage] Calling updateBadge with:", JSON.stringify(usageData).slice(0, 200));
     await updateBadge(usageData);
     await checkThresholdNotifications(usageData);
   } catch (err) {
