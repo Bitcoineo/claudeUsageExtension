@@ -15,50 +15,18 @@ const KEY_LABELS = {
 // === Cookie & API Helpers ===
 
 async function fetchUsageData() {
-  const cookies = await chrome.cookies.getAll({ domain: "claude.ai" });
-  if (!cookies || cookies.length === 0) {
-    throw new Error("NO_COOKIES");
+  const tabs = await chrome.tabs.query({ url: "https://claude.ai/*" });
+  if (!tabs || tabs.length === 0) {
+    throw new Error("NO_TAB");
   }
 
-  const orgCookie = cookies.find(c => c.name === "lastActiveOrg");
-  if (!orgCookie) {
-    throw new Error("NO_ORG_ID");
+  const response = await chrome.tabs.sendMessage(tabs[0].id, { action: "fetchUsage" });
+
+  if (response.error) {
+    throw new Error(response.error);
   }
 
-  const orgId = orgCookie.value;
-  const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join("; ");
-
-  const url = `${USAGE_API_BASE}/${orgId}/usage`;
-  const headers = {
-    "Cookie": cookieHeader,
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-    "Origin": CLAUDE_ORIGIN,
-    "Referer": `${CLAUDE_ORIGIN}/settings/usage`,
-    "User-Agent": navigator.userAgent,
-    "Sec-Fetch-Dest": "empty",
-    "Sec-Fetch-Mode": "cors",
-    "Sec-Fetch-Site": "same-origin",
-    "anthropic-client-platform": "web",
-  };
-
-  console.log("[ClaudeUsage] Fetching:", url);
-  console.log("[ClaudeUsage] Cookies found:", cookies.map(c => c.name).join(", "));
-
-  const res = await fetch(url, {
-    headers,
-    credentials: "include"
-  });
-
-  if (!res.ok) {
-    let body = "";
-    try { body = await res.text(); } catch (_) {}
-    console.error(`[ClaudeUsage] ${res.status} response:`, body);
-    console.error("[ClaudeUsage] Response headers:", [...res.headers.entries()]);
-    throw new Error(`API_ERROR_${res.status}`);
-  }
-
-  return res.json();
+  return response.data;
 }
 
 // === Badge Update ===

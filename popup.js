@@ -247,6 +247,8 @@ function getErrorMessage(errorCode) {
       return "Please sign in to claude.ai";
     case "NO_ORG_ID":
       return "Could not find organization. Visit claude.ai first.";
+    case "NO_TAB":
+      return "Open claude.ai in a tab first";
     default:
       if (errorCode && errorCode.startsWith("API_ERROR_")) {
         const status = errorCode.replace("API_ERROR_", "");
