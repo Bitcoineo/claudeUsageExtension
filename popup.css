@@ -171,16 +171,16 @@ h1 {
   padding: 10px;
   border: none;
   border-radius: 8px;
-  background: #4ade80;
+  background: #e8600a;
   color: #fff;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: background 0.2s;
 }
 
 .welcome-btn:hover {
-  opacity: 0.85;
+  background: #cc5408;
 }
 
 .welcome-refresh {

@@ -15,7 +15,9 @@ const KEY_LABELS = {
 // === Cookie & API Helpers ===
 
 async function fetchUsageData() {
+  console.log("[ClaudeUsage] Querying for claude.ai tabs...");
   const tabs = await chrome.tabs.query({ url: "https://claude.ai/*" });
+  console.log("[ClaudeUsage] Found tabs:", tabs.length, tabs.map(t => t.url));
   if (!tabs || tabs.length === 0) {
     throw new Error("NO_TAB");
   }

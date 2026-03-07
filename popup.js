@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else if (stored.usageData && stored.usageData.error) {
     if (isAuthError(stored.usageData.error)) {
       showWelcome();
+    } else if (isTabError(stored.usageData.error)) {
+      showNoTab();
     } else {
       showStatus(getErrorMessage(stored.usageData.error), true);
     }
@@ -42,6 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else if (newData && newData.error) {
         if (isAuthError(newData.error)) {
           showWelcome();
+        } else if (isTabError(newData.error)) {
+          showNoTab();
         } else {
           showStatus(getErrorMessage(newData.error), true);
         }
@@ -264,6 +268,10 @@ function isAuthError(errorCode) {
   return errorCode === "NO_COOKIES" || errorCode === "NO_ORG_ID";
 }
 
+function isTabError(errorCode) {
+  return errorCode === "NO_TAB" || errorCode === "NO_RESPONSE";
+}
+
 function showWelcome() {
   const container = document.getElementById("usageSections");
   const statusEl = document.getElementById("statusMsg");
@@ -281,6 +289,35 @@ function showWelcome() {
 
   document.getElementById("openClaudeBtn").addEventListener("click", () => {
     chrome.tabs.create({ url: "https://claude.ai/settings/usage" });
+  });
+
+  document.getElementById("refreshBtn").addEventListener("click", () => {
+    document.getElementById("refreshBtn").textContent = "Refreshing...";
+    chrome.runtime.sendMessage({ action: "pollNow" });
+  });
+}
+
+function showNoTab() {
+  const container = document.getElementById("usageSections");
+  const statusEl = document.getElementById("statusMsg");
+  statusEl.classList.add("hidden");
+
+  container.innerHTML = `
+    <div class="welcome">
+      <img src="icons/icon128.png" class="welcome-icon" alt="Claude Usage Tracker">
+      <h2 class="welcome-title">No Claude tab detected</h2>
+      <p class="welcome-subtitle">Open Claude and reload to start tracking</p>
+      <button class="welcome-btn" id="openClaudeBtn">Open Claude</button>
+      <button class="welcome-refresh" id="refreshBtn">Refresh</button>
+    </div>
+  `;
+
+  document.getElementById("openClaudeBtn").addEventListener("click", () => {
+    chrome.tabs.create({ url: "https://claude.ai/new" });
+    document.getElementById("openClaudeBtn").textContent = "Opening...";
+    setTimeout(() => {
+      chrome.runtime.sendMessage({ action: "pollNow" });
+    }, 3000);
   });
 
   document.getElementById("refreshBtn").addEventListener("click", () => {
