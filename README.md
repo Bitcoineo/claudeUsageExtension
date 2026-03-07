@@ -4,6 +4,8 @@ Chrome extension that shows your Claude.ai usage limits in real time. Reads your
 
 **Stack:** `Chrome Extension MV3 · Vanilla JS · claude.ai API · chrome.cookies · chrome.alarms`
 
+**Install:** https://chromewebstore.google.com/detail/claude-usage-tracker/leehnhnjmhkcilhfciocoabjoeecioil
+
 ---
 
 ## Why I built this
@@ -14,18 +16,12 @@ Claude has usage limits but no built-in way to see how close you are until you h
 
 - **Auto cookie reading** Reads claude.ai cookies directly via chrome.cookies API, zero setup required
 - **Usage bars** Current Session (5h), Weekly All Models (7d), Weekly Sonnet, and more. Unavailable tiers are hidden automatically
-- **Color-coded thresholds** Green (under 50%), Yellow (50-75%), Orange (75-90%), Red (over 90%) on bars, card bordernd badge
+- **Color-coded thresholds** Green (under 50%), Yellow (50-75%), Orange (75-90%), Red (over 90%) on bars, card border, and badge
 - **Live toolbar badge** Always shows the utilization of whichever card is in the first position
 - **Drag-to-reorder** Drag cards by the grip handle to prioritize the metric you care about. Order persists via chrome.storage.local and updates the badge instantly
 - **Threshold notifications** Desktop alerts at 50%, 75%, and 90%. Each fires once and resets when usage drops back below
 - **Auto-refresh** Polls the usage API every 5 minutes via chrome.alarms with an "Updated Xs ago" indicator
 - **Dark theme** Matches Claude's UI aesthetic
-
-## Screenshots
-
-![Usage popup](store/screenshot-1.png)
-
-![Welcome screen](store/screenshot-2.png)
 
 ## Install
 
